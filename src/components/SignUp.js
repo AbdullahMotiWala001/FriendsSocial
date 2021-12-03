@@ -1,6 +1,6 @@
 import React from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useState from 'react-hook-use-state';
 import {
     Grid,
@@ -16,38 +16,50 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import { app } from './Firebase';
+
 
 const Signup = () => {
-
+    const navigate = useNavigate();
+    let name, value
 
     const [user, setUser] = useState({
         name: "",
         email: "",
         phone: "",
         password: "",
-        gender: null,
+        // gender: null,
     })
 
-
-    const changeHandler = (e) => {
-        setUser(e.target.value)
+    const getUser = (e) => {
+        name = e.target.name
+        value = e.target.value
+        setUser({ ...user, [name]: value })
     }
+
+    // const getUser = (e) => {
+    //     setUser({
+    //         name: e.target.value,
+    //         email: "",
+    //         phone: "",
+    //         password: "",
+    //         gender: null,
+    //     })
+    // }
 
     //
     const fireBaseSignUp = () => {
-        const history = useHistory();
         const auth = getAuth();
-        createUserWithEmailAndPassword(auth, user.name, user.password)
+        createUserWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
                 alert("You have successfully Signup")
-                history.push("Home")
+                navigate('/')
             })
             .catch((error) => {
-                const errorCode = error.code;
                 const errorMessage = error.message;
-                alert("Problem Occuredd")
+                alert(errorMessage)
             });
     };
 
@@ -60,7 +72,7 @@ const Signup = () => {
     const headerStyle = { margin: 0 };
     const avatarStyle = { backgroundColor: "#1bbd7e" };
     const marginTop = { marginTop: 5 };
-    
+
     return (
         <div className="form">
             <Grid>
@@ -75,15 +87,16 @@ const Signup = () => {
                         </Typography>
                     </Grid>
                     <form>
-                        <TextField onChange={changeHandler} fullWidth label="Name" placeholder="Enter your name" value={user.name} />
-                        <TextField onChange={changeHandler} fullWidth label="Email" placeholder="Enter your email" value={user.email} />
+                        <TextField onChange={getUser} fullWidth label="Name" value={user.name} name="name" />
+                        <TextField onChange={getUser} fullWidth label="Email" value={user.email} name="email" />
 
                         <TextField
                             fullWidth
                             label="Phone Number"
                             placeholder="Enter your phone number"
                             value={user.phone}
-                            onChange={changeHandler}
+                            onChange={getUser}
+                            name="phone"
                         />
                         <FormControl component="fieldset" style={marginTop}>
                             <FormLabel component="legend">Gender</FormLabel>
@@ -109,7 +122,8 @@ const Signup = () => {
                             label="Password"
                             placeholder="Enter your password"
                             value={user.password}
-                            onChange={changeHandler}
+                            onChange={getUser}
+                            name="password"
                         />
 
                         <Button onClick={fireBaseSignUp} variant="contained" color="primary" style={{ margin: '10px' }} >

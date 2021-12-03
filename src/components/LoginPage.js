@@ -1,7 +1,5 @@
 import React from 'react';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from './Firebase';
-import { useHistory } from 'react-router-dom';
 import useState from 'react-hook-use-state';
 import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -9,35 +7,40 @@ import { Checkbox } from '@mui/material';
 import { FormControlLabel } from '@mui/material';
 import { FormGroup } from '@mui/material';
 import { Link } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
+import { app } from './Firebase';
 
 
 export default function LoginPage() {
+    const navigate = useNavigate();
+
+    let name, value
     const [user, setUser] = useState({
-        name: "",
         email: "",
+        password: "",
     })
 
-    const changeHandler = (e) => {
-        setUser(e.target.value)
+
+    const getUser = (e) => {
+        name = e.target.name
+        value = e.target.value
+        setUser({ ...user, [name]: value })
     }
-    
-    const auth = getAuth();
-    const history = useHistory();
-    signInWithEmailAndPassword(auth, user.name, user.password)
-    .then((userCredential) => {
-        // Signed in 
-        const user = userCredential.user;
-        history.push("Home");
-        // ...
-    })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            alert(error.code);
-        });
+    const firebaseSignIn = () => {
+        const auth = getAuth();
+        signInWithEmailAndPassword(auth, user.email, user.password)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                navigate('/')
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(error.code);
+            });
 
-
+    }
     const paperStyle = {
         padding: 20,
         margin: '20px auto',
@@ -53,7 +56,6 @@ export default function LoginPage() {
     return (
         <>
             <Grid alig>
-
                 <Paper elevation={10} style={paperStyle}>
                     <Grid align='center'>
                         <h2>Login</h2>
@@ -62,12 +64,12 @@ export default function LoginPage() {
                     <Grid marginTop={1}>
                         <h1 style={{ color: '#00A36C' }}>F.R.I.E.N.D.S</h1>
                     </Grid>
-                    <TextField onChange={changeHandler} label="Email" variant="standard" fullWidth required value={user.name}></TextField>
-                    <TextField onChange={changeHandler} label="Password" variant="standard" fullWidth required value={user.password}></TextField>
+                    <TextField name="email" onChange={getUser} label="Email" variant="standard" fullWidth required value={user.name}></TextField>
+                    <TextField name="password" onChange={getUser} label="Password" variant="standard" fullWidth required value={user.password}></TextField>
                     <FormGroup>
                         <FormControlLabel control={<Checkbox />} label="Remembre me" />
                     </FormGroup>
-                    <Button color='primary' fullWidth variant='contained'>Sign In</Button>
+                    <Button color='primary' fullWidth variant='contained' onClick={firebaseSignIn}>Sign In</Button>
                     <Typography >
                         Do you have an account ? <Link style={{ cursor: 'pointer' }} to="/signup"> Sign Up </Link>
                     </Typography>

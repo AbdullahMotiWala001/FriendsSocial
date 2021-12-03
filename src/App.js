@@ -6,13 +6,14 @@ import {
 import LoginPage from './components/LoginPage';
 import SignUp from './components/SignUp';
 import Navbar from './components/Navbar';
+import Home from './components/Home'
 
 function App() {
   return (
     <div className="App">
       <Navbar />
       <Routes>
-        <Route path="home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignUp />} />
       </Routes>
