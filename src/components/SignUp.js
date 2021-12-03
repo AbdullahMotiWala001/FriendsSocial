@@ -1,4 +1,5 @@
 import React from "react";
+import useState from 'react-hook-use-state';
 import {
     Grid,
     Paper,
@@ -15,6 +16,19 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 
 const Signup = () => {
+    const [user, setUser] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+        gender: null,
+    })
+    const changeHandler = (e) => {
+        setUser(e.target.value)
+    }
+    // const sentData = async (e) => {
+    //     await fetch()
+    // }
     const paperStyle = {
         padding: 20,
         margin: '20px auto',
@@ -38,8 +52,16 @@ const Signup = () => {
                         </Typography>
                     </Grid>
                     <form>
-                        <TextField fullWidth label="Name" placeholder="Enter your name" />
-                        <TextField fullWidth label="Email" placeholder="Enter your email" />
+                        <TextField onChange={changeHandler} fullWidth label="Name" placeholder="Enter your name" value={user.name} />
+                        <TextField onChange={changeHandler} fullWidth label="Email" placeholder="Enter your email" value={user.email} />
+
+                        <TextField
+                            fullWidth
+                            label="Phone Number"
+                            placeholder="Enter your phone number"
+                            value={user.phone}
+                            onChange={changeHandler}
+                        />
                         <FormControl component="fieldset" style={marginTop}>
                             <FormLabel component="legend">Gender</FormLabel>
                             <RadioGroup
@@ -61,16 +83,13 @@ const Signup = () => {
                         </FormControl>
                         <TextField
                             fullWidth
-                            label="Phone Number"
-                            placeholder="Enter your phone number"
-                        />
-                        <TextField
-                            fullWidth
                             label="Password"
                             placeholder="Enter your password"
+                            value={user.password}
+                            onChange={changeHandler}
                         />
 
-                        <Button type="submit" variant="contained" color="primary" style={{ margin: '10px' }}>
+                        <Button onClick={sentData} variant="contained" color="primary" style={{ margin: '10px' }} >
                             Sign up
                         </Button>
                     </form>
