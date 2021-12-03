@@ -1,5 +1,6 @@
 import React from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useHistory } from 'react-router-dom';
 import useState from 'react-hook-use-state';
 import {
     Grid,
@@ -17,6 +18,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 
 const Signup = () => {
+
+
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -24,18 +27,22 @@ const Signup = () => {
         password: "",
         gender: null,
     })
+
+
     const changeHandler = (e) => {
         setUser(e.target.value)
     }
 
     //
     const fireBaseSignUp = () => {
+        const history = useHistory();
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, user.name, user.password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
                 alert("You have successfully Signup")
+                history.push("Home")
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -44,9 +51,6 @@ const Signup = () => {
             });
     };
 
-    // const sentData = async (e) => {
-    //     await fetch()
-    // }
     const paperStyle = {
         padding: 20,
         margin: '20px auto',
@@ -56,6 +60,7 @@ const Signup = () => {
     const headerStyle = { margin: 0 };
     const avatarStyle = { backgroundColor: "#1bbd7e" };
     const marginTop = { marginTop: 5 };
+    
     return (
         <div className="form">
             <Grid>
