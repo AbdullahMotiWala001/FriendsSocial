@@ -1,4 +1,5 @@
 import React from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import useState from 'react-hook-use-state';
 import {
     Grid,
@@ -26,6 +27,23 @@ const Signup = () => {
     const changeHandler = (e) => {
         setUser(e.target.value)
     }
+
+    //
+    const fireBaseSignUp = () => {
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, user.name, user.password)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                alert("You have successfully Signup")
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert("Problem Occuredd")
+            });
+    };
+
     // const sentData = async (e) => {
     //     await fetch()
     // }
@@ -89,7 +107,7 @@ const Signup = () => {
                             onChange={changeHandler}
                         />
 
-                        <Button onClick={sentData} variant="contained" color="primary" style={{ margin: '10px' }} >
+                        <Button onClick={fireBaseSignUp} variant="contained" color="primary" style={{ margin: '10px' }} >
                             Sign up
                         </Button>
                     </form>
