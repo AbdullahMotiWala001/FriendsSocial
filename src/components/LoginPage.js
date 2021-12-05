@@ -8,6 +8,7 @@ import { FormControlLabel } from '@mui/material';
 import { FormGroup } from '@mui/material';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
 import { app } from './Firebase';
 
 
@@ -55,6 +56,8 @@ export default function LoginPage() {
 
     return (
         <>
+            <Navbar />
+
             <Grid alig>
                 <Paper elevation={10} style={paperStyle}>
                     <Grid align='center'>

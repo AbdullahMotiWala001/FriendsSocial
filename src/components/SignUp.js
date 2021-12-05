@@ -1,4 +1,6 @@
 import React from "react";
+import { doc, setDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import useState from 'react-hook-use-state';
@@ -16,7 +18,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import { app } from './Firebase';
+import { app, db, storage } from './Firebase';
 
 
 const Signup = () => {
@@ -28,6 +30,7 @@ const Signup = () => {
         email: "",
         phone: "",
         password: "",
+        userDp: ""
         // gender: null,
     })
 
@@ -48,19 +51,35 @@ const Signup = () => {
     // }
 
     //
+    const dpGetting = (dp) => {
+        const dpRef = ref(storage, `/dpIamges/${user.email}`);
+        uploadBytes(dpRef, user.userDp)
+    }
+    const sendingData = async (userName, dpLink) => {
+        await setDoc(doc(db, 'users', user.email), {
+            userName,
+        });
+    }
     const fireBaseSignUp = () => {
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
                 // Signed in 
-                const user = userCredential.user;
+                // const user = userCredential.user;
                 alert("You have successfully Signup")
                 navigate('/')
+                sendingData(user.name)
+                dpGetting(user.userDp)
+                // userEmail = user.email
             })
             .catch((error) => {
+                const errorCode = error.code
                 const errorMessage = error.message;
-                alert(errorMessage)
+                alert(errorCode)
+                // console.log(user.userDp)
             });
+
+
     };
 
     const paperStyle = {
@@ -70,7 +89,7 @@ const Signup = () => {
         height: '70vh'
     };
     const headerStyle = { margin: 0 };
-    const avatarStyle = { backgroundColor: "#1bbd7e" };
+    const avatarStyle = { backgroundColor: "#1bbd7e", height: '70px', width: '70px' };
     const marginTop = { marginTop: 5 };
 
     return (
@@ -125,7 +144,7 @@ const Signup = () => {
                             onChange={getUser}
                             name="password"
                         />
-
+                        <input type='file' onChange={getUser} name='userDp' accept=".png, .jpg, .jpeg" style={marginTop} placeholder="add your image" />
                         <Button onClick={fireBaseSignUp} variant="contained" color="primary" style={{ margin: '10px' }} >
                             Sign up
                         </Button>
