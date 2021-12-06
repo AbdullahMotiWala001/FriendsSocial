@@ -27,6 +27,8 @@ export default function LoginPage() {
         value = e.target.value
         setUser({ ...user, [name]: value })
     }
+
+    
     const firebaseSignIn = () => {
         const auth = getAuth();
         signInWithEmailAndPassword(auth, user.email, user.password)
@@ -36,8 +38,6 @@ export default function LoginPage() {
                 navigate('/')
             })
             .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
                 alert(error.code);
             });
 
@@ -56,7 +56,7 @@ export default function LoginPage() {
 
     return (
         <>
-            <Navbar />
+            {/* <Navbar /> */}
 
             <Grid alig>
                 <Paper elevation={10} style={paperStyle}>

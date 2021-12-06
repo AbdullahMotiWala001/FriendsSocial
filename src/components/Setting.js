@@ -5,7 +5,7 @@ import Collapse from '@mui/material/Collapse';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-export default function Setting() {
+export default function Setting(props) {
     const [open, setOpen] = useState(true);
     const handleClick = () => {
         setOpen(!open);
@@ -18,6 +18,7 @@ export default function Setting() {
             <Collapse in={!open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <ListItemText primary="Change Profile" />
+                    <ListItemText primary="Logout" onClick={props.logOut}/>
                 </List>
             </Collapse>
         </div>
