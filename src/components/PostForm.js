@@ -6,32 +6,123 @@ import { height, width } from '@mui/system';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import useState from 'react-hook-use-state';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { app, db, storage } from './Firebase';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+
+
 
 
 
 
 
 const Postform = () => {
-    let name, value
+    const storage = getStorage();
+    const metadata = {
+        contentType: 'image/jpeg'
+    };
+
+
+
+
+    //Data sending
+    const [userEmail, setUserEmail] = useState("");
+    const [postLink, setPostLink] = useState(null);
     const [post, setPost] = useState({
         title: "",
         descrip: "",
-        // postImage: "",
     })
+    const navigate = useNavigate();
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // const docRef = doc(db, "users", user.email);
+            // getDoc(doc(db, "users", user.email)).then(docSnap => {
+            //     if (docSnap.exists()) {
+            //         console.log(docSnap.data().userName);
+            //     } else {
+            //         console.log("No such document!");
+            //     }
+            // })
+            setUserEmail(user.email);
+            // ...
+        } else {
+            // User is signed out
+            // ...
+        }
+    });
+
+    const gettingImage = () => {
+        let time = new Date();
+        let timeStamp = time.getTime().toString();
+        const postIamge = document.getElementById("postImage").files[0]
+        const storageRef = ref(storage, 'postImages/' + userEmail+'/'+timeStamp);
+        const uploadTask = uploadBytesResumable(storageRef, postIamge, metadata);
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                }
+            },
+            (error) => {
+                // A full list of error codes is available at
+                // https://firebase.google.com/docs/storage/web/handle-errors
+                switch (error.code) {
+                    case 'storage/unauthorized':
+                        // User doesn't have permission to access the object
+                        break;
+                    case 'storage/canceled':
+                        // User canceled the upload
+                        break;
+
+                    // ...
+
+                    case 'storage/unknown':
+                        // Unknown error occurred, inspect error.serverResponse
+                        break;
+                }
+            },
+            () => {
+                // Upload completed successfully, now we can get the download URL
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    setPostLink(downloadURL);
+                });
+            }
+        );
+    }
+
+    let name, value
+
     const userPost = (e) => {
         name = e.target.name
         value = e.target.value
         setPost({ ...post, [name]: value })
     }
     //Sending Post to firebase
-    const sentPost = async () => {
-        //continue
-        console.log(post)
+    const sentPost = () => {
+        gettingImage();
+        let time = new Date();
+        let timeStamp = time.getTime().toString();
+        console.log(postLink)
+         setDoc(doc(db, 'users', userEmail, 'posts', timeStamp), {
+            post, postImage: postLink
+        })
+        
+            .then(() => { alert('Post added Successfully') })
     }
 
 
-    const navigate = useNavigate();
+
     const formStyle = {
         marginTop: 50,
         display: 'flex',
@@ -50,10 +141,10 @@ const Postform = () => {
                 rows={4}
                 name="descrip"
             />
-            <input type="file" name="postImage" id="" />
+            <input type="file" name="postImage" id="postImage" />
             <Button variant='contained' onClick={sentPost}>Submit</Button>
         </div>
     );
-}
 
+}
 export default Postform;
