@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from 'react';
 import { doc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
-import useState from 'react-hook-use-state';
 import {
     Grid,
     Paper,

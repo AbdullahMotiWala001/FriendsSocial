@@ -19,46 +19,36 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 
 
 const Postform = () => {
+    const navigate = useNavigate();
+    const auth = getAuth();
     const storage = getStorage();
+
     const metadata = {
         contentType: 'image/jpeg'
     };
-
-
-
-
-    //Data sending
+    //Initial Data
     const [userEmail, setUserEmail] = useState("");
     const [postLink, setPostLink] = useState(null);
     const [post, setPost] = useState({
         title: "",
         descrip: "",
     })
-    const navigate = useNavigate();
-    const auth = getAuth();
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // const docRef = doc(db, "users", user.email);
-            // getDoc(doc(db, "users", user.email)).then(docSnap => {
-            //     if (docSnap.exists()) {
-            //         console.log(docSnap.data().userName);
-            //     } else {
-            //         console.log("No such document!");
-            //     }
-            // })
             setUserEmail(user.email);
-            // ...
         } else {
             // User is signed out
             // ...
         }
     });
 
-    const gettingImage = () => {
+    //Sending Post to firebase
+    const sentPost = () => {
         let time = new Date();
         let timeStamp = time.getTime().toString();
         const postIamge = document.getElementById("postImage").files[0]
-        const storageRef = ref(storage, 'postImages/' + userEmail+'/'+timeStamp);
+        const storageRef = ref(storage, 'postImages/' + userEmail + '/' + timeStamp);
         const uploadTask = uploadBytesResumable(storageRef, postIamge, metadata);
         uploadTask.on('state_changed',
             (snapshot) => {
@@ -95,31 +85,33 @@ const Postform = () => {
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setPostLink(downloadURL);
+                    setDoc(doc(db, 'users', userEmail, 'posts', timeStamp), {
+                        post,
+                        postImage: downloadURL
+                    }).then(() => { alert('Post added Successfully'); navigate('/')})
                 });
             }
         );
     }
 
+    //changing state dynamically
     let name, value
-
     const userPost = (e) => {
         name = e.target.name
         value = e.target.value
         setPost({ ...post, [name]: value })
     }
     //Sending Post to firebase
-    const sentPost = () => {
-        gettingImage();
-        let time = new Date();
-        let timeStamp = time.getTime().toString();
-        console.log(postLink)
-         setDoc(doc(db, 'users', userEmail, 'posts', timeStamp), {
-            post, postImage: postLink
-        })
-        
-            .then(() => { alert('Post added Successfully') })
-    }
+    // const myPost = () => {
+    //     let time = new Date();
+    //     let timeStamp = time.getTime().toString();
+    //     console.log(postLink)
+    //     setDoc(doc(db, 'users', userEmail, 'posts', timeStamp), {
+    //         post
+    //     })
+
+    //         .then(() => { alert('Post added Successfully') })
+    // }
 
 
 

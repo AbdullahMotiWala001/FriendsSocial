@@ -21,14 +21,14 @@ export default function Navbar() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            const docRef = doc(db, "users", user.email);
-            getDoc(doc(db, "users", user.email)).then(docSnap => {
-                if (docSnap.exists()) {
-                    console.log(docSnap.data().userName);
-                } else {
-                    console.log("No such document!");
-                }
-            })
+            // const docRef = doc(db, "users", user.email);
+            // getDoc(doc(db, "users", user.email)).then(docSnap => {
+            //     if (docSnap.exists()) {
+            //         console.log(docSnap.data().userName);
+            //     } else {
+            //         console.log("No such document!");
+            //     }
+            // })
             // ...
         } else {
             // User is signed out
