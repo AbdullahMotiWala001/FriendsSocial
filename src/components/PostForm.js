@@ -28,11 +28,8 @@ const Postform = () => {
     };
     //Initial Data
     const [userEmail, setUserEmail] = useState("");
-    const [postLink, setPostLink] = useState(null);
-    const [post, setPost] = useState({
-        title: "",
-        descrip: "",
-    })
+    const [postTitle, setPostTitle] = useState("")
+    const [postDes, setpostDes] = useState("")
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -46,9 +43,10 @@ const Postform = () => {
     //Sending Post to firebase
     const sentPost = () => {
         let time = new Date();
-        let timeStamp = time.getTime().toString();
+        let timeStampString = time.getTime().toString();
+        let timeStamp = time.getTime();
         const postIamge = document.getElementById("postImage").files[0]
-        const storageRef = ref(storage, 'postImages/' + userEmail + '/' + timeStamp);
+        const storageRef = ref(storage, 'postImages/' + userEmail + '/' + timeStampString);
         const uploadTask = uploadBytesResumable(storageRef, postIamge, metadata);
         uploadTask.on('state_changed',
             (snapshot) => {
@@ -85,21 +83,23 @@ const Postform = () => {
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setDoc(doc(db, 'users', userEmail, 'posts', timeStamp), {
-                        post,
-                        postImage: downloadURL
-                    }).then(() => { alert('Post added Successfully'); navigate('/')})
+                    setDoc(doc(db, 'users', userEmail, 'posts', timeStampString), {
+                        postTitle,
+                        postDes,
+                        postImage: downloadURL,
+                        time: timeStamp
+                    }).then(() => { alert('Post added Successfully'); navigate('/') })
                 });
             }
         );
     }
 
     //changing state dynamically
-    let name, value
+    const userDes = (e) => {
+        setpostDes(e.target.value);
+    }
     const userPost = (e) => {
-        name = e.target.name
-        value = e.target.value
-        setPost({ ...post, [name]: value })
+        setPostTitle(e.target.value);
     }
     //Sending Post to firebase
     // const myPost = () => {
@@ -126,7 +126,7 @@ const Postform = () => {
         <div style={formStyle}>
             <TextField onChange={userPost} id="outlined-basic" label="Title" variant="outlined" name="title" />
             <TextField
-                onChange={userPost}
+                onChange={userDes}
                 id="outlined-multiline-static"
                 label="Description"
                 multiline
