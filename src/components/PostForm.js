@@ -28,8 +28,10 @@ const Postform = () => {
     };
     //Initial Data
     const [userEmail, setUserEmail] = useState("");
-    const [postTitle, setPostTitle] = useState("")
-    const [postDes, setpostDes] = useState("")
+    const [postDet, setPostDet] = useState({
+        descrip: "",
+        title: "",
+    })
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -63,8 +65,6 @@ const Postform = () => {
                 }
             },
             (error) => {
-                // A full list of error codes is available at
-                // https://firebase.google.com/docs/storage/web/handle-errors
                 switch (error.code) {
                     case 'storage/unauthorized':
                         // User doesn't have permission to access the object
@@ -83,35 +83,22 @@ const Postform = () => {
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setDoc(doc(db, 'users', userEmail, 'posts', timeStampString), {
-                        postTitle,
-                        postDes,
+                    setDoc(doc(db, 'posts', timeStampString), {
+                        ...postDet,
                         postImage: downloadURL,
-                        time: timeStamp
+                        time: timeStamp,
+                        author: userEmail
                     }).then(() => { alert('Post added Successfully'); navigate('/') })
                 });
             }
         );
     }
 
-    //changing state dynamically
-    const userDes = (e) => {
-        setpostDes(e.target.value);
+    const changeState = (e) => {
+        let { name, value } = e.target;
+        setPostDet({ ...postDet, [name]: value })
+        console.log(postDet)
     }
-    const userPost = (e) => {
-        setPostTitle(e.target.value);
-    }
-    //Sending Post to firebase
-    // const myPost = () => {
-    //     let time = new Date();
-    //     let timeStamp = time.getTime().toString();
-    //     console.log(postLink)
-    //     setDoc(doc(db, 'users', userEmail, 'posts', timeStamp), {
-    //         post
-    //     })
-
-    //         .then(() => { alert('Post added Successfully') })
-    // }
 
 
 
@@ -124,9 +111,9 @@ const Postform = () => {
     }
     return (
         <div style={formStyle}>
-            <TextField onChange={userPost} id="outlined-basic" label="Title" variant="outlined" name="title" />
             <TextField
-                onChange={userDes}
+                onChange={changeState}
+                name="descrip"
                 id="outlined-multiline-static"
                 label="Description"
                 multiline

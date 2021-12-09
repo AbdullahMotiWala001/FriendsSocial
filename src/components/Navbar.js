@@ -2,34 +2,38 @@ import React from 'react'
 import { Link } from "react-router-dom";
 import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
-import { getStorage, ref } from "firebase/storage";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, setDoc } from "firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
 import { app, db, storage } from './Firebase';
 import { width } from '@mui/system';
 import Setting from './Setting.js';
 import useState from 'react-hook-use-state';
 import { getFirestore } from '@firebase/firestore';
-
-const pathReference = ref(storage, 'images/stars.jpg');
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Navbar() {
-
+    const [userName, setUserName] = useState("");
+    const [userDp, setUserDp] = useState("");
 
     //calling userData
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // ...
+            const docRef = doc(db, "profile", user.email);
+            getDoc(doc(db, "profile", user.email)).then(docSnap => {
+                if (docSnap.exists()) {
+                    setUserName(docSnap.data().name);
+                    setUserDp(docSnap.data().dpLink);
+
+
+                }
+            })
         } else {
             // User is signed out
             // ...
         }
     });
-    const storage = getStorage();
     const paperStyle = {
-        height: '5vh',
+        height: '8vh',
         padding: 10
     }
     const avatarStyle = {
@@ -38,14 +42,18 @@ export default function Navbar() {
     }
     return (
         <div>
-            <Paper elevation={5} style={paperStyle}>
+            <Paper elevation={10} style={paperStyle}>
                 <Grid container spacing={8} justifyContent="center">
                     <Grid item>
-                        <Avatar><img src="" alt="" /></Avatar>
+                        <Avatar
+                            alt="user profile image"
+                            src={userDp}
+                            sx={{ width: 56, height: 56 }}
+                        />
                     </Grid>
                     <Grid item>
                         <Typography>
-                            <p></p>
+                            <p>{userName}</p>
                         </Typography>
                     </Grid>
                     <Grid item>

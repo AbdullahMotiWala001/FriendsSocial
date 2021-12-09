@@ -32,7 +32,7 @@ export default function Home() {
     //reteriving
     const myArr = [];
     useEffect(() => {
-        onSnapshot(collection(db, "users", "ams@gmial.com", 'posts'), (snapShot) => setPostArr(snapShot.docs.map((doc) => (doc.data()))))
+        onSnapshot(collection(db, 'posts'), (snapShot) => setPostArr(snapShot.docs.map((doc) => (doc.data()))))
     }, []);
     // }
 
@@ -40,8 +40,8 @@ export default function Home() {
         <>
             <Navbar />
             <h1>Posts</h1>
-            <Link to="PostForm">Add More</Link><br/>
-            {postArr.map((e)=><Post postTitle={e.postTitle} postDesc={e.postDes} postImage={e.postImage} />)}
+            <Link to="PostForm">Add More</Link><br />
+            {postArr.map((e) => <Post postDate={e.timeStamp} author={e.author} postDesc={e.descrip} postImage={e.postImage} />)}
         </>
     );
 }

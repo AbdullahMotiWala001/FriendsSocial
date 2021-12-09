@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { doc, setDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import {
@@ -21,6 +21,9 @@ import { app, db, storage } from './Firebase';
 
 
 const Signup = () => {
+    const metadata = {
+        contentType: 'image/jpeg'
+    };
     const navigate = useNavigate();
     let name, value
 
@@ -29,7 +32,6 @@ const Signup = () => {
         email: "",
         phone: "",
         password: "",
-        userDp: ""
         // gender: null,
     })
 
@@ -50,25 +52,66 @@ const Signup = () => {
     // }
 
     //
-    const dpGetting = (dp) => {
-        const dpRef = ref(storage, `/dpIamges/${user.email}`);
-        uploadBytes(dpRef, user.userDp)
+    // const dpGetting = (dp) => {
+    //     const dpRef = ref(storage, `/dpIamges/${user.email}`);
+    //     uploadBytes(dpRef, user.userDp)
+    // }
+
+    //
+    const sendingData = () => {
+        const dpImage = document.getElementById("dpImage").files[0]
+        const storageRef = ref(storage, 'dpImages/' + user.email);
+        const uploadTask = uploadBytesResumable(storageRef, dpImage, metadata);
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                }
+            },
+            (error) => {
+                switch (error.code) {
+                    case 'storage/unauthorized':
+                        // User doesn't have permission to access the object
+                        break;
+                    case 'storage/canceled':
+                        // User canceled the upload
+                        break;
+
+                    // ...
+
+                    case 'storage/unknown':
+                        // Unknown error occurred, inspect error.serverResponse
+                        break;
+                }
+            },
+            () => {
+                // Upload completed successfully, now we can get the download URL
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    setDoc(doc(db, 'profile', user.email), {
+                        dpLink: downloadURL,
+                        ...user
+                    }).then(() => { alert('Post added Successfully'); navigate('/') })
+                });
+            }
+        );
     }
-    const sendingData = async (userName, dpLink) => {
-        await setDoc(doc(db, 'users', user.email), {
-            userName,
-        });
-    }
+
+    //
     const fireBaseSignUp = () => {
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
-                // Signed in 
-                // const user = userCredential.user;
+                sendingData()
                 alert("You have successfully Signup")
                 navigate('/')
-                sendingData(user.name)
-                dpGetting(user.userDp)
                 // userEmail = user.email
             })
             .catch((error) => {
@@ -143,7 +186,7 @@ const Signup = () => {
                             onChange={getUser}
                             name="password"
                         />
-                        <input type='file' onChange={getUser} name='userDp' accept=".png, .jpg, .jpeg" style={marginTop} placeholder="add your image" />
+                        <input type='file' id='dpImage' name='userDp' accept=".png, .jpg, .jpeg" style={marginTop} placeholder="add your image" />
                         <Button onClick={fireBaseSignUp} variant="contained" color="primary" style={{ margin: '10px' }} >
                             Sign up
                         </Button>

@@ -5,6 +5,7 @@ import Collapse from '@mui/material/Collapse';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
+import { Link } from "react-router-dom";
 export default function Setting(props) {
     const [open, setOpen] = useState(true);
     const handleClick = () => {
@@ -17,8 +18,8 @@ export default function Setting(props) {
             </ListItemButton>
             <Collapse in={!open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    <ListItemText primary="Change Profile" />
-                    <ListItemText primary="Logout" onClick={props.logOut}/>
+                    <Link to='/profile'><ListItemText primary="Change Profile" /></Link>
+                    <ListItemText primary="Logout" onClick={props.logOut} />
                 </List>
             </Collapse>
         </div>

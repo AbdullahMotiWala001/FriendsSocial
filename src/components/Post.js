@@ -45,8 +45,8 @@ const Post = (props) => {
                                 <MoreVertIcon />
                             </IconButton>
                         }
-                        title={props.postTitle}
-                        subheader={props.postingData}
+                        title={props.author}
+                        subheader={props.postingDate}
                     />
                     <CardMedia
                         component="img"
