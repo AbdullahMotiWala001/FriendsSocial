@@ -2,44 +2,51 @@ import React from 'react';
 import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import useState from 'react-hook-use-state';
 import paperStyle from './Navbar';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { app, db, storage } from './Firebase';
 import { useNavigate } from 'react-router-dom';
 
 
 
-
 export default function ProfilePage() {
     const auth = getAuth()
+    const user = auth.currentUser;
+
     const navigate = useNavigate();
 
-    const [bio, setBio] = useState({
+    const [userBio, setUserBio] = useState({
         bio: "",
+        phone: "",
         name: "",
         email: ""
 
     })
+    const docRef = doc(db, "profile", user.email);
+    useEffect(() => {
         if (user) {
-            const docRef = doc(db, "profile", user.email);
-            getDoc(doc(db, "profile", user.email)).then(docSnap => {
+            getDoc(docRef).then(docSnap => {
                 if (docSnap.exists()) {
-                    setBio({
+                    setUserBio({
                         bio: docSnap.data().bio,
                         name: docSnap.data().name,
-                        email: docSnap.data().email
+                        email: docSnap.data().email,
+                        phone : docSnap.data().phone 
                     })
-                }
-                else {
-                    navigate('/login')
                 }
             })
         }
-    // })
+    })
+    const updateUser = () => {
+        setDoc(docRef).then(docSnap => {
+            ...userBio
+        }
+        )
+    }
 
     const changeState = (e) => {
         let { name, value } = e.target;
-        setBio({ ...bio, [name]: value })
+        setUserBio({ ...bio, [name]: value })
     }
 
     const formStyle = {
@@ -58,7 +65,7 @@ export default function ProfilePage() {
                 label="Bio"
                 multiline
                 rows={4}
-                value={bio.bio}
+                value={userBio.bio}
             />
             <TextField
                 onChange={changeState}
@@ -67,7 +74,7 @@ export default function ProfilePage() {
                 label="Name"
                 multiline
                 rows={4}
-                value={bio.name}
+                value={userBio.name}
             /> <TextField
                 onChange={changeState}
                 name="email"
@@ -77,8 +84,17 @@ export default function ProfilePage() {
                 rows={4}
                 value={bio.email}
             />
-            {/* <input type="file" name="postImage" id="postImage" /> */}
-            <Button variant='contained' >Save Changes</Button>
+            <TextField
+                onChange={changeState}
+                name="email"
+                id="outlined-multiline-static"
+                label="Email"
+                multiline
+                rows={4}
+                value={userBio.phone}
+            />
+            <input type="file" name="postImage" id="postImage" />
+            <Button variant='contained' onClcikc={updateUser}>Save Changes</Button>
         </div>
     )
 }
