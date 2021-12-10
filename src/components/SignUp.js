@@ -32,7 +32,6 @@ const Signup = () => {
         email: "",
         phone: "",
         password: "",
-        // gender: null,
     })
 
     const getUser = (e) => {
@@ -95,7 +94,7 @@ const Signup = () => {
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setDoc(doc(db, 'profile', user.email), {
+                    setDoc(doc(db, 'profile', user.uid), {
                         dpLink: downloadURL,
                         ...user
                     }).then(() => { alert('Post added Successfully'); navigate('/') })
@@ -112,13 +111,9 @@ const Signup = () => {
                 sendingData()
                 alert("You have successfully Signup")
                 navigate('/')
-                // userEmail = user.email
             })
             .catch((error) => {
-                const errorCode = error.code
-                const errorMessage = error.message;
-                alert(errorCode)
-                // console.log(user.userDp)
+                alert(error.code)
             });
 
 

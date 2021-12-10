@@ -21,9 +21,6 @@ export default function Home() {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             setUserEmail(user.email);
-            // console.log(user.email)
-            // retrieveData()
-            // ...
         } else {
             navigate('/login')
         }

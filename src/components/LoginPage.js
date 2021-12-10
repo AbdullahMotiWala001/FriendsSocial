@@ -1,7 +1,7 @@
 import React from 'react';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app } from './Firebase';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useNavigate } from 'react-router-dom';
 import useState from 'react-hook-use-state';
 import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 
 
 export default function LoginPage() {
+    const navigate = useNavigate()
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -23,12 +24,11 @@ export default function LoginPage() {
     }
     
     const auth = getAuth();
-    const history = useHistory();
     signInWithEmailAndPassword(auth, user.name, user.password)
     .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
-        history.push("Home");
+        navigate("Home");
         // ...
     })
         .catch((error) => {
