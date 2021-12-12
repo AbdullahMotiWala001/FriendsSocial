@@ -16,9 +16,12 @@ export const snapShot = () => {
     }
 }
 
-export const signIn = () => {
+export const signIn = (email, pass) => {
     return {
-        type: 'signIn'
+        type: 'signIn',
+        payload: {
+            email, pass
+        }
     }
 }
 

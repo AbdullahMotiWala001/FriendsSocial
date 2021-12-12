@@ -110,7 +110,7 @@ const Signup = () => {
             .then((userCredential) => {
                 sendingData()
                 alert("You have successfully Signup")
-                navigate('/')
+                navigate('/login')
             })
             .catch((error) => {
                 alert(error.code)

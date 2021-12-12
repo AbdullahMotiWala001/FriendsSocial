@@ -1,10 +1,12 @@
-import { combineReducers } from "redux";
-import { signIn, signUp, authState, sentPost, snapShot } from './Reducers';
+// import { combineReducers } from '@reduxjs/toolkit';
+// import { signInRed } from './signIn';
 
-export const rootReducer = combineReducers({
-    signIn,
-    signUp,
-    snapShot,
-    authState,
-    sentPost
-})
+// export const rootReducer = combineReducers({
+//     reducers : {
+//         signInRed,
+//         // signUp,
+//         // snapShot,
+//         // authState,
+//         // sentPost
+//     }
+// })
