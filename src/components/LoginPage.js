@@ -1,7 +1,5 @@
 import React from 'react';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from './Firebase';
-import { useHistory, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useState from 'react-hook-use-state';
 import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -9,14 +7,13 @@ import { Checkbox } from '@mui/material';
 import { FormControlLabel } from '@mui/material';
 import { FormGroup } from '@mui/material';
 import { Link } from "react-router-dom";
-import { useDispatch } from 'react-redux'
-import { signIn } from '../Redux/Reducers/signIn';
+import { signIn } from './FirebaseFun';
 
 
 
 export default function LoginPage() {
-    const dispatch = useDispatch()
     const navigate = useNavigate()
+    //functions
     const [user, setUser] = useState({
         email: "",
         password: "",
@@ -26,22 +23,9 @@ export default function LoginPage() {
         name = e.target.name
         value = e.target.value
         setUser({ ...user, [name]: value })
-        console.log(user.pass)
     }
-    // signInWithEmailAndPassword(auth, user.name, user.password)
-    //     .then((userCredential) => {
-    //         // Signed in 
-    //         const user = userCredential.user;
-    //         navigate("Home");
-    //         // ...
-    //     })
-    //     .catch((error) => {
-    //         const errorCode = error.code;
-    //         const errorMessage = error.message;
-    //         alert(error.code);
-    //     });
-
-
+    
+    //styling
     const paperStyle = {
         padding: 20,
         margin: '20px auto',
@@ -71,7 +55,7 @@ export default function LoginPage() {
                     <FormGroup>
                         <FormControlLabel control={<Checkbox />} label="Remembre me" />
                     </FormGroup>
-                    <Button color='primary' fullWidth variant='contained' onClick={() => { dispatch(signIn(user)) }}>Sign In</Button>
+                    <Button color='primary' fullWidth variant='contained' onClick={() => signIn(user.email, user.password, navigate)}>Sign In</Button>
                     <Typography >
                         Do you have an account ? <Link style={{ cursor: 'pointer' }} to="/signup"> Sign Up </Link>
                     </Typography>

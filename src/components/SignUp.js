@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { doc, setDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
 import {
     Grid,
@@ -17,13 +16,12 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import { app, db, storage } from './Firebase';
+import { signUp } from './FirebaseFun';
+import { db, storage } from './Firebase';
 
 
-const Signup = () => {
-    const metadata = {
-        contentType: 'image/jpeg'
-    };
+const Signup = (uid) => {
+
     const navigate = useNavigate();
     let name, value
 
@@ -40,85 +38,57 @@ const Signup = () => {
         setUser({ ...user, [name]: value })
     }
 
-    // const getUser = (e) => {
-    //     setUser({
-    //         name: e.target.value,
-    //         email: "",
-    //         phone: "",
-    //         password: "",
-    //         gender: null,
-    //     })
-    // }
-
-    //
-    // const dpGetting = (dp) => {
-    //     const dpRef = ref(storage, `/dpIamges/${user.email}`);
-    //     uploadBytes(dpRef, user.userDp)
-    // }
-
-    //
-    const sendingData = () => {
+    //function
+    const metadata = {
+        contentType: 'image/jpeg'
+    };
+    const sendingData = (uid) => {
         const dpImage = document.getElementById("dpImage").files[0]
-        const storageRef = ref(storage, 'dpImages/' + user.email);
+        const storageRef = ref(storage, 'dpImages/' + uid);
         const uploadTask = uploadBytesResumable(storageRef, dpImage, metadata);
         uploadTask.on('state_changed',
             (snapshot) => {
                 // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-                switch (snapshot.state) {
-                    case 'paused':
-                        console.log('Upload is paused');
-                        break;
-                    case 'running':
-                        console.log('Upload is running');
-                        break;
-                }
+                // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                // console.log('Upload is ' + progress + '% done');
+                // switch (snapshot.state) {
+                //     case 'paused':
+                //         console.log('Upload is paused');
+                //         break;
+                //     case 'running':
+                //         console.log('Upload is running');
+                //         break;
+                // }
             },
             (error) => {
-                switch (error.code) {
-                    case 'storage/unauthorized':
-                        // User doesn't have permission to access the object
-                        break;
-                    case 'storage/canceled':
-                        // User canceled the upload
-                        break;
+                // switch (error.code) {
+                //     case 'storage/unauthorized':
+                //         // User doesn't have permission to access the object
+                //         break;
+                //     case 'storage/canceled':
+                //         // User canceled the upload
+                //         break;
 
-                    // ...
+                //     // ...
 
-                    case 'storage/unknown':
-                        // Unknown error occurred, inspect error.serverResponse
-                        break;
-                }
+                //     case 'storage/unknown':
+                //         // Unknown error occurred, inspect error.serverResponse
+                //         break;
+                // }
             },
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setDoc(doc(db, 'profile', user.uid), {
+                    setDoc(doc(db, 'profile', uid), {
                         dpLink: downloadURL,
-                        ...user
-                    }).then(() => { alert('Post added Successfully'); navigate('/') })
+                        ...user,
+                        uid
+                    })
                 });
             }
         );
     }
-
-    //
-    const fireBaseSignUp = () => {
-        const auth = getAuth();
-        createUserWithEmailAndPassword(auth, user.email, user.password)
-            .then((userCredential) => {
-                sendingData()
-                alert("You have successfully Signup")
-                navigate('/login')
-            })
-            .catch((error) => {
-                alert(error.code)
-            });
-
-
-    };
-
+    //Styling
     const paperStyle = {
         padding: 20,
         margin: '20px auto',
@@ -182,13 +152,13 @@ const Signup = () => {
                             name="password"
                         />
                         <input type='file' id='dpImage' name='userDp' accept=".png, .jpg, .jpeg" style={marginTop} placeholder="add your image" />
-                        <Button onClick={fireBaseSignUp} variant="contained" color="primary" style={{ margin: '10px' }} >
+                        <Button onClick={() => { signUp(user.email, user.password, navigate, sendingData) }} variant="contained" color="primary" style={{ margin: '10px' }} >
                             Sign up
                         </Button>
                     </form>
                 </Paper>
             </Grid>
-        </div>
+        </div >
     );
 };
 

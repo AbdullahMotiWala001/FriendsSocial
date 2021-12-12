@@ -9,7 +9,7 @@ import Navbar from './components/Navbar';
 import Home from './components/Home'
 import Post from './components/Post';
 import PostForm from './components/PostForm';
-// import ProfilePage from './components/ProfilePage';
+import ProfilePage from './components/ProfilePage';
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
         <Route path="signup" element={<SignUp />} />
         <Route path="post" element={<Post />} />
         <Route path="postform" element={<PostForm />} />
-        {/* <Route path='profile' element={<ProfilePage />} /> */}
+        <Route path='profile' element={<ProfilePage />} />
       </Routes>
       {/* <ProfilePage /> */}
     </div>
