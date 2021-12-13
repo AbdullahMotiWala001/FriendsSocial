@@ -8,12 +8,15 @@ import Loading from './Loading';
 import { query, orderBy, startAt } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 import { app, db, storage } from './Firebase';
+import { useEffect } from 'react';
+import { useMemo } from 'react';
 
 
 
 
 
 export default function SearchFun() {
+    console.log("pak")
     const [userQuery, setUserQuery] = useState("")
     const [searchState, setSearchState] = useState("none");
     const Search = styled('div')(({ theme }) => ({
@@ -56,7 +59,7 @@ export default function SearchFun() {
     }));
     const profileRef = collection(db, "profile");
     const userSearch = async (e) => {
-        setUserQuery(e.target.value)
+
         const q = query(profileRef, orderBy("name"), startAt(userQuery))
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
@@ -66,24 +69,22 @@ export default function SearchFun() {
     }
     return (
         <div>
+            <SearchIcon />
             <Search>
-                <SearchIconWrapper>
-                    <SearchIcon />
-                </SearchIconWrapper>
                 <StyledInputBase
                     value={userQuery}
                     placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
-                    onChange={userSearch}
-                    onFocus={() => {
-                        setSearchState('showLoad'); console.log("pak")
-                    }}
-                    onMouseOut={() => {
-                        setSearchState('none')
-                    }}
+                    onChange={(e) => { setUserQuery(e.target.value) }}
+                // onFocus={() => {
+                //     setSearchState('showLoad'); console.log("pak")
+                // }}
+                // onMouseOut={() => {
+                //     setSearchState('none')
+                // }}
                 />
             </Search>
-            {searchState == 'showLoad' && <Loading />}
+            {/* {searchState == 'showLoad' && <Loading />} */}
 
         </div>
     )

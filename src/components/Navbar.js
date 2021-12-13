@@ -32,6 +32,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import SearchFun from "./SearchFun";
+import ProfilePage from './ProfilePage'
 
 export default function Navbar() {
     const [name, setname] = useState("");
@@ -180,9 +181,7 @@ export default function Navbar() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    Profile
-                </Button></MenuItem>
+                <ProfilePage /></MenuItem>
             <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
         </Menu>
     );
@@ -320,7 +319,7 @@ export default function Navbar() {
                 </Box>
             </div>
             {/* ui for popper */}
-            <div>
+            {/* <div>
                 <Dialog
                     fullScreen
                     open={open}
@@ -366,7 +365,7 @@ export default function Navbar() {
 
                     </List>
                 </Dialog>
-            </div>
+            </div> */}
         </>
     );
 }

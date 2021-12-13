@@ -1,176 +1,205 @@
-// import React from 'react';
-// import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
-// import useState from 'react-hook-use-state';
-// import paperStyle from './Navbar';
-// import { doc, getDoc, setDoc } from "firebase/firestore";
-// import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-// import { app, db, storage } from './Firebase';
-// import { useNavigate } from 'react-router-dom';
-
-
-
-// export default function ProfilePage() {
-//     const auth = getAuth()
-//     const user = auth.currentUser;
-
-//     const navigate = useNavigate();
-
-//     const [userBio, setUserBio] = useState({
-//         bio: "",
-//         phone: "",
-//         name: "",
-//         email: ""
-
-//     })
-//     const docRef = doc(db, "profile", user.email);
-//     useEffect(() => {
-//         if (user) {
-//             getDoc(docRef).then(docSnap => {
-//                 if (docSnap.exists()) {
-//                     setUserBio({
-//                         bio: docSnap.data().bio,
-//                         name: docSnap.data().name,
-//                         email: docSnap.data().email,
-//                         phone : docSnap.data().phone 
-//                     })
-//                 }
-//             })
-//         }
-//     })
-//     const updateUser = () => {
-//         setDoc(docRef).then(docSnap => {
-//             ...userBio
-//         }
-//         )
-//     }
-
-//     const changeState = (e) => {
-//         let { name, value } = e.target;
-//         setUserBio({ ...bio, [name]: value })
-//     }
-
-//     const formStyle = {
-//         marginTop: 50,
-//         display: 'flex',
-//         flexDirection: 'column',
-//         justifyContent: 'spaceBetween',
-//         'height': '70vh',
-//     }
-//     return (
-//         <div style={formStyle}>
-//             <TextField
-//                 onChange={changeState}
-//                 name="Bio"
-//                 id="outlined-multiline-static"
-//                 label="Bio"
-//                 multiline
-//                 rows={4}
-//                 value={userBio.bio}
-//             />
-//             <TextField
-//                 onChange={changeState}
-//                 name="name"
-//                 id="outlined-multiline-static"
-//                 label="Name"
-//                 multiline
-//                 rows={4}
-//                 value={userBio.name}
-//             /> <TextField
-//                 onChange={changeState}
-//                 name="email"
-//                 id="outlined-multiline-static"
-//                 label="Email"
-//                 multiline
-//                 rows={4}
-//                 value={bio.email}
-//             />
-//             <TextField
-//                 onChange={changeState}
-//                 name="email"
-//                 id="outlined-multiline-static"
-//                 label="Email"
-//                 multiline
-//                 rows={4}
-//                 value={userBio.phone}
-//             />
-//             <input type="file" name="postImage" id="postImage" />
-//             <Button variant='contained' onClcikc={updateUser}>Save Changes</Button>
-//         </div>
-//     )
-// }
-
-
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import ListItemText from '@mui/material/ListItemText';
-import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
+import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
+import Button from '@mui/material/Button';
+import useState from 'react-hook-use-state';
+import { useRef } from 'react';
+import { app, db, storage } from './Firebase';
+import { doc, getDoc, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
+import { getAuth, onAuthStateChanged, signOut, updateEmail } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+export default function ProfilePage() {
+    const navigate = useNavigate()
+    const auth = getAuth()
+    //myFun
+    // const navigate = useNavigate();
+    const [uid, setUID] = useState("");
+    const [postDiv, setPostDiv] = useState(false);
+    const [userDiv, setUserDiv] = useState(false);
+    const [post, setPost] = useState([]);
+    const [userInfo, setUserInfo] = useState({});
+    const [caption, setCaption] = useState("");
+    const files = useRef("");
+    const upFile = useRef("");
+    const [changeName, setChangeName] = useState(false);
+    const [changeLastName, setChangeLastName] = useState(false);
+    const [changeEmail, setChangeEmail] = useState(false);
+    const [changeGender, setChangeGender] = useState(false);
+    const [changeNameVal, setChangeNameVal] = useState("");
+    const [changeLastNameval, setChangeLastNameval] = useState("");
+    const [changeGenderVal, setChangeGenderVal] = useState("");
+    const [changeEmailVal, setChangeEmailVal] = useState("");
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const uid = user.uid;
+                setUID(uid);
+                //// Getting User Info
+                onSnapshot(doc(db, "profile", uid), (doc) => {
+                    setUserInfo(doc.data());
+                });
+                //// Getting User Info
 
-export default function FullScreenDialog() {
-    const [open, setOpen] = React.useState(false);
+                //// Getting User Posts
+                // onSnapshot(collection(db, "profile", uid, "post"), (snapShot) =>
+                //     setPost(snapShot.docs.map((doc) => doc.data()))
+                // );
+                //// Getting User Posts
+            } else {
+                navigate("/404");
+            }
+        });
+    }, []);
+    const edit = (val) => {
+        if (!changeName) {
+            return (
+                <>
+                    <span className="span">{val}</span>
+                    <EditRoundedIcon
+                        onClick={editBtn}
+                        style={{ marginLeft: "10px", fontSize: "20px" }}
+                    />
+                </>
+            );
+        } else if (changeName) {
+            return (
+                <>
+                    <input
+                        type="text"
+                        className="edit"
+                        onChange={(e) => {
+                            setChangeNameVal(e.target.value);
+                        }}
+                    />
+                    <ChangeCircleRoundedIcon
 
-    const handleClickOpen = () => {
-        setOpen(true);
+                    />
+                    <button
+                        id="name"
+                        onClick={(e) => {
+                            updateProvidedData(e, changeNameVal);
+                            setChangeName(!changeName);
+                        }}>Update</button>
+                </>
+            );
+        }
+    };
+    const editEmail = (val) => {
+        if (!changeEmail) {
+            return (
+                <>
+                    <span>{val}</span>
+                    <EditRoundedIcon
+                        onClick={editBtnEmail}
+                        style={{ marginLeft: "10px", fontSize: "20px" }}
+                    />
+                </>
+            );
+        } else if (changeEmail) {
+            return (
+                <>
+                    <input
+                        type="email"
+                        className="edit"
+                        onChange={(e) => {
+                            setChangeEmailVal(e.target.value);
+                        }}
+                    />
+                    <ChangeCircleRoundedIcon />
+                    <button
+                        id="email"
+                        onClick={(e) => {
+                            editUserEmail(e, changeEmailVal);
+                            setChangeEmail(!changeEmail);
+                            console.log(changeEmailVal)
+                        }}
+                    >Update</button>
+                </>
+            );
+        }
+    };
+    const editUserEmail = (e, val) => {
+        updateEmail(auth.currentUser, val).then(() => {
+            alert("GO & CHECK")
+        }).catch((error) => {
+            alert("Please Write Correct Email To Change")
+        });
+    };
+    const editBtn = () => {
+        setChangeName(true);
+    };
+    const editBtnName = () => {
+        setChangeLastName(true);
+    };
+
+    const editBtnEmail = () => {
+        setChangeEmail(true);
+    };
+
+    const editBtnGender = () => {
+        setChangeGender(true);
+    };
+    // const [changeEmail , setChangeEmail] = useState(false)
+
+    const updateProvidedData = (e, val) => {
+        if (val.length >= 2 && val != userInfo[e.target.id]) {
+            const updateRef = doc(db, "profile", uid);
+            updateDoc(updateRef, {
+                [e.target.id]: val,
+            });
+        }
+    };
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setAnchorEl(null);
     };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Open full-screen dialog
+            <Button aria-describedby={id} variant="contained" onClick={handleClick}>
+                Profile
             </Button>
-            <Dialog
-                fullScreen
+            <Popover
+
+                anchorReference="anchorPosition"
+                anchorPosition={{ top: 200, left: 400 }}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'left',
+                }}
+                id={id}
                 open={open}
+                anchorEl={anchorEl}
                 onClose={handleClose}
-                TransitionComponent={Transition}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
             >
-                <AppBar sx={{ position: 'relative' }}>
-                    <Toolbar>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                            Sound
-                        </Typography>
-                        <Button autoFocus color="inherit" onClick={handleClose}>
-                            save
-                        </Button>
-                    </Toolbar>
-                </AppBar>
-                <List>
-                    <ListItem button>
-                        <ListItemText primary="Phone ringtone" secondary="Titania" />
-                    </ListItem>
-                    <Divider />
-                    <ListItem button>
-                        <ListItemText
-                            primary="Default notification ringtone"
-                            secondary="Tethys"
-                        />
-                    </ListItem>
-                </List>
-            </Dialog>
+                <div className="user">
+                    <p>Name : {edit(userInfo.name)}</p>
+                    <p>Email : {editEmail(userInfo.email)} </p>
+                </div>
+                {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
+            </Popover>
+
         </div>
     );
 }
