@@ -4,7 +4,6 @@ import InputBase from '@mui/material/InputBase';
 import { styled, alpha } from '@mui/material/styles';
 import SearchShowing from './SearchShowing';
 import useState from 'react-hook-use-state';
-import Loading from './Loading';
 import { query, orderBy, startAt } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 import { app, db, storage } from './Firebase';
@@ -17,7 +16,8 @@ import { useMemo } from 'react';
 
 export default function SearchFun() {
     console.log("pak")
-    const [userQuery, setUserQuery] = useState("")
+    const [userQuery, setUserQuery] = useState("");
+    const [searchResult, setSearchedResult] = ([]);
     const [searchState, setSearchState] = useState("none");
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
@@ -59,31 +59,44 @@ export default function SearchFun() {
     }));
     const profileRef = collection(db, "profile");
     const userSearch = async (e) => {
-
         const q = query(profileRef, orderBy("name"), startAt(userQuery))
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            setSearchedResult(querySnapshot.docs.map((doc) => doc.data()))
         });
     }
     return (
         <div>
-            <SearchIcon />
-            <Search>
+            {/* <Search>
+                <SearchIconWrapper style={{ cursor: 'pointer' }}>
+                    <SearchIcon />
+                </SearchIconWrapper>
                 <StyledInputBase
                     value={userQuery}
                     placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
-                    onChange={(e) => { setUserQuery(e.target.value) }}
-                // onFocus={() => {
-                //     setSearchState('showLoad'); console.log("pak")
-                // }}
-                // onMouseOut={() => {
-                //     setSearchState('none')
-                // }}
+                    onChange={userSearch}
                 />
-            </Search>
+            </Search> 
+            */}
+            {/* <Search>
+                <SearchIconWrapper>
+                    <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                    placeholder="Search…"
+                    value={userQuery}
+                    onChange={(e) => {
+                        setUserQuery(e.target.value);
+                        console.log(e.target.value);
+                        setSearchedResult([])
+                        // searchResult(inputSearch, setSearchedResult, searchedResult);
+                    }}
+
+                    inputProps={{ "aria-label": "search" }}
+                />
+            </Search> */}
             {/* {searchState == 'showLoad' && <Loading />} */}
 
         </div>
