@@ -10,7 +10,7 @@ const auth = getAuth();
 export const signIn = (email, password, navigate) => {
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            const user = userCredential.user;
+            // const user = userCredential.user;
             alert("Suceed")
             const navigateState = navigate;
             navigateState('/');

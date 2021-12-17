@@ -1,11 +1,10 @@
 import * as React from 'react';
 import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import useState from 'react-hook-use-state';
 import { useRef } from 'react';
-import { app, db, storage } from './Firebase';
-import { doc, getDoc, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
+import { db } from './Firebase';
+import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
 import { getAuth, onAuthStateChanged, signOut, updateEmail } from "firebase/auth";
@@ -42,13 +41,6 @@ export default function ProfilePage() {
                 onSnapshot(doc(db, "profile", uid), (doc) => {
                     setUserInfo(doc.data());
                 });
-                //// Getting User Info
-
-                //// Getting User Posts
-                // onSnapshot(collection(db, "profile", uid, "post"), (snapShot) =>
-                //     setPost(snapShot.docs.map((doc) => doc.data()))
-                // );
-                //// Getting User Posts
             } else {
                 navigate("/404");
             }
@@ -76,7 +68,6 @@ export default function ProfilePage() {
                         }}
                     />
                     <ChangeCircleRoundedIcon
-
                     />
                     <button
                         id="name"
@@ -143,7 +134,6 @@ export default function ProfilePage() {
     const editBtnGender = () => {
         setChangeGender(true);
     };
-    // const [changeEmail , setChangeEmail] = useState(false)
 
     const updateProvidedData = (e, val) => {
         if (val.length >= 2 && val != userInfo[e.target.id]) {

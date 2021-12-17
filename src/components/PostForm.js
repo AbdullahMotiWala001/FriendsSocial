@@ -1,13 +1,10 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { ViewColumn } from '@material-ui/icons';
-import { height, width } from '@mui/system';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import useState from 'react-hook-use-state';
-import { doc, setDoc, Timestamp } from "firebase/firestore";
-import { app, db, storage } from './Firebase';
+import { doc, setDoc } from "firebase/firestore";
+import { db } from './Firebase';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
@@ -108,6 +105,7 @@ const Postform = () => {
         flexDirection: 'column',
         justifyContent: 'spaceBetween',
         'height': '70vh',
+        'width' : '50vh'
     }
     return (
         <div style={formStyle}>

@@ -5,7 +5,6 @@ import {
 } from "react-router-dom";
 import LoginPage from './components/LoginPage';
 import SignUp from './components/SignUp';
-import Navbar from './components/Navbar';
 import Home from './components/Home'
 import Post from './components/Post';
 import PostForm from './components/PostForm';
