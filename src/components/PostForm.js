@@ -2,8 +2,8 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import useState from 'react-hook-use-state';
-import { doc, setDoc } from "firebase/firestore";
+import { useState } from 'react';
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from './Firebase';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -15,7 +15,9 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 
 
 
+
 const Postform = () => {
+    const [userDetail, setUserDetail] = useState({})
     const navigate = useNavigate();
     const auth = getAuth();
     const storage = getStorage();
@@ -31,19 +33,25 @@ const Postform = () => {
     })
 
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            setUserEmail(user.email);
-        } else {
-            // User is signed out
-            // ...
-        }
+        // if (user) {
+        //     const userId = user.uid;
+        //     getDoc(doc(db, "profile", userId)).then(docSnap => {
+        //         if (docSnap.exists()) {
+        //             setUserDetail(docSnap.data());
+        //         } else {
+        //             console.log("No such document!");
+        //         }
+        //     })
+        // } else {
+        //     navigate('/login')
+        // }
     });
 
     //Sending Post to firebase
     const sentPost = () => {
         let time = new Date();
         let timeStampString = time.getTime().toString();
-        let timeStamp = time.getTime();
+        let timeStamp = time.toGMTString();
         const postIamge = document.getElementById("postImage").files[0]
         const storageRef = ref(storage, 'postImages/' + userEmail + '/' + timeStampString);
         const uploadTask = uploadBytesResumable(storageRef, postIamge, metadata);
@@ -84,7 +92,8 @@ const Postform = () => {
                         ...postDet,
                         postImage: downloadURL,
                         time: timeStamp,
-                        author: userEmail
+                        author: userDetail.name,
+                        dp : userDetail.dpLink
                     }).then(() => { alert('Post added Successfully'); navigate('/') })
                 });
             }
@@ -105,7 +114,7 @@ const Postform = () => {
         flexDirection: 'column',
         justifyContent: 'spaceBetween',
         'height': '70vh',
-        'width' : '50vh'
+        'width': '50vh'
     }
     return (
         <div style={formStyle}>
