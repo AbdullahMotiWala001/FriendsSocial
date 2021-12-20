@@ -10,7 +10,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import NavBar from './NavBar';
 import { doc, getDoc } from "firebase/firestore";
 
-
+//props passed error
 
 export default function Home() {
     const [postArr, setPostArr] = useState([]);
@@ -38,7 +38,6 @@ export default function Home() {
     useEffect(() => {
         onSnapshot(collection(db, 'posts'), (snapShot) => setPostArr(snapShot.docs.map((doc) => (doc.data()))))
     }, []);
-
     return (
         <>
             <NavBar dp={userDetail.dpLink} />

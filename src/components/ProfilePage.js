@@ -42,7 +42,7 @@ export default function ProfilePage() {
                     setUserInfo(doc.data());
                 });
             } else {
-                navigate("/404");
+                navigate("/login");
             }
         });
     }, []);

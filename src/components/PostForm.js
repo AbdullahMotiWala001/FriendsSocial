@@ -16,8 +16,10 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 
 
 
-const Postform = () => {
+const Postform = (props) => {
     const [userDetail, setUserDetail] = useState({})
+    const [userDp, setUserDp] = useState("");
+    const [userName, setUserName] = useState("");
     const navigate = useNavigate();
     const auth = getAuth();
     const storage = getStorage();
@@ -32,25 +34,28 @@ const Postform = () => {
         title: "",
     })
 
-    onAuthStateChanged(auth, (user) => {
-        // if (user) {
-        //     const userId = user.uid;
-        //     getDoc(doc(db, "profile", userId)).then(docSnap => {
-        //         if (docSnap.exists()) {
-        //             setUserDetail(docSnap.data());
-        //         } else {
-        //             console.log("No such document!");
-        //         }
-        //     })
-        // } else {
-        //     navigate('/login')
-        // }
-    });
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //         const userId = user.uid;
+    //         getDoc(doc(db, "profile", userId)).then(docSnap => {
+    //             if (docSnap.exists()) {
+    //                 setUserDetail(docSnap.data());
+    //             } else {
+    //                 console.log("No such document!");
+    //             }
+    //         })
+    //     } else {
+    //         navigate('/login')
+    //     }
+    // });
 
     //Sending Post to firebase
-    const sentPost = () => {
+
+    const sentPost = (propsName, propsDp) => {
+        console.log(propsName)
         let time = new Date();
-        let timeStampString = time.getTime().toString();
+        let timeStampString = time.getTime()
+        let timeString = time.toString();
         let timeStamp = time.toGMTString();
         const postIamge = document.getElementById("postImage").files[0]
         const storageRef = ref(storage, 'postImages/' + userEmail + '/' + timeStampString);
@@ -88,12 +93,14 @@ const Postform = () => {
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setDoc(doc(db, 'posts', timeStampString), {
+                    setDoc(doc(db, 'posts', 'timeStampString'), {
                         ...postDet,
                         postImage: downloadURL,
                         time: timeStamp,
-                        author: userDetail.name,
-                        dp : userDetail.dpLink
+                        // author: userDetail
+                        // dp: userDetail.dpLink
+                        author: {propsName},
+                        dpLink: {propsDp}
                     }).then(() => { alert('Post added Successfully'); navigate('/') })
                 });
             }
@@ -128,7 +135,7 @@ const Postform = () => {
                 name="descrip"
             />
             <input type="file" name="postImage" id="postImage" />
-            <Button variant='contained' onClick={sentPost}>Submit</Button>
+            <Button variant='contained' onClick={() => { sentPost(props.name, props.dp) }}>Submit</Button>
         </div>
     );
 
