@@ -19,21 +19,21 @@ export default function Home() {
     const navigate = useNavigate();
     const auth = getAuth();
     //authentication
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            setUserEmail(user.email);
-            const userId = user.uid;
-            getDoc(doc(db, "profile", userId)).then(docSnap => {
-                if (docSnap.exists()) {
-                    setUserDetail(docSnap.data());
-                } else {
-                    console.log("No such document!");
-                }
-            })
-        } else {
-            navigate('/login')
-        }
-    });
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //         setUserEmail(user.email);
+    //         const userId = user.uid;
+    //         getDoc(doc(db, "profile", userId)).then(docSnap => {
+    //             if (docSnap.exists()) {
+    //                 setUserDetail(docSnap.data());
+    //             } else {
+    //                 console.log("No such document!");
+    //             }
+    //         })
+    //     } else {
+    //         navigate('/login')
+    //     }
+    // });
     //reteriving
     useEffect(() => {
         onSnapshot(collection(db, 'posts'), (snapShot) => setPostArr(snapShot.docs.map((doc) => (doc.data()))))
