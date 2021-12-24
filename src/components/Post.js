@@ -11,21 +11,16 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Grid from '@material-ui/core/Grid';
 
 const Post = (props) => {
-    const [expanded, setExpanded] = React.useState(false);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
+    
     return (
         <Grid
             container
             spacing={0}
             direction="column"
             alignItems="center"
-            justify="center"
             style={{ minHeight: '100vh' }}
         >
-            <Grid item xs={3} marginBottom>
+            <Grid item xs={3} >
                 <Card sx={{ maxWidth: 345 }}>
                     <CardHeader
                         avatar={

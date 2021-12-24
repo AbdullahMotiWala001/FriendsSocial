@@ -3,12 +3,13 @@ import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from './Firebase';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+// import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useContext } from 'react';
-import { NameContext } from './userContext';
+import { NameContext, DpContext, UidContext } from './userContext';
+
 
 
 
@@ -21,19 +22,21 @@ import { NameContext } from './userContext';
 
 const Postform = (props) => {
     const userNameCont = useContext(NameContext);
+    const dpContext = useContext(DpContext);
+    const uidContext = useContext(UidContext)
     console.log(userNameCont)
     // const [userDp, setUserDp] = useState("");
     // const [userName, setUserName] = useState("");
     const navigate = useNavigate();
-    const auth = getAuth();
+    // const auth = getAuth();
     const storage = getStorage();
 
     const metadata = {
         contentType: 'image/jpeg'
     };
     //Initial Data
-    const [userEmail, setUserEmail] = useState("");
-    const [userName, setUserName] = useState("");
+    // const [userEmail, setUserEmail] = useState("");
+    // const [userName, setUserName] = useState("");
     const [postDet, setPostDet] = useState({
         descrip: "",
         title: "",
@@ -62,10 +65,10 @@ const Postform = (props) => {
         // setUserName(userNameCont)
         let time = new Date();
         let timeStampString = time.getTime()
-        let timeString = time.toString();
+        let timeString = timeStampString.toString();
         let timeStamp = time.toGMTString();
         const postIamge = document.getElementById("postImage").files[0]
-        const storageRef = ref(storage, 'postImages/' + userEmail + '/' + timeStampString);
+        const storageRef = ref(storage, 'postImages/' + uidContext + '/' + timeStampString);
         const uploadTask = uploadBytesResumable(storageRef, postIamge, metadata);
         uploadTask.on('state_changed',
             (snapshot) => {
@@ -79,6 +82,7 @@ const Postform = (props) => {
                     case 'running':
                         console.log('Upload is running');
                         break;
+                    default: console.log("Not Running")
                 }
             },
             (error) => {
@@ -95,17 +99,19 @@ const Postform = (props) => {
                     case 'storage/unknown':
                         // Unknown error occurred, inspect error.serverResponse
                         break;
+                        
+                    default: console.log("Not Running")
                 }
             },
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setDoc(doc(db, 'posts', 'timeStampStr'), {
+                    setDoc(doc(db, 'posts', timeString), {
                         ...postDet,
                         postImage: downloadURL,
                         time: timeStamp,
-                        author: userNameCont,
-                        // dp: userDetail.dpLink
+                        // author: userNameCont,
+                        dp: (dpContext || 'unknown')
                         // author: {userName},
                         // dpLink: {propsDp}
                     }).then(() => { alert('Post added Successfully'); navigate('/') })
@@ -139,7 +145,6 @@ const Postform = (props) => {
                 label="Description"
                 multiline
                 rows={4}
-                name="descrip"
             />
             <input type="file" name="postImage" id="postImage" />
             <p>{userNameCont}</p>

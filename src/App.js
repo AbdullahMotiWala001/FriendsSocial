@@ -1,10 +1,6 @@
 import './App.css';
 import {
-  BrowserRouter as RouterMine,
-  Routes,
-  Route,
-  BrowserRouter
-} from "react-router-dom";
+  BrowserRouter,Routes,Route} from "react-router-dom";
 import LoginPage from './components/LoginPage';
 import SignUp from './components/SignUp';
 import Home from './components/Home'
@@ -25,11 +21,11 @@ function App() {
   const [userDetails, setUserDetails] = useState({ name: 'null' })
   const [userName, setUserName] = useState("")
   useLayoutEffect(() => {
-    if (userDetails.name == 'null') {
+    if (userDetails.name === 'null') {
       const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          const uid = user.uid;
+          // const uid = user.uid;
           const docRef = doc(db, "profile", '3Wco91mzXegAmrilsV7l0qh1ZpM2');
           getDoc(docRef).then((doc) => {
             setUserDetails({ ...doc.data(), uid: '3Wco91mzXegAmrilsV7l0qh1ZpM2' });
@@ -46,15 +42,15 @@ function App() {
       <BrowserRouter>
         <EmailContext.Provider value={userDetails.email} >
           <UidContext.Provider value={userDetails.uid} >
-            <NameContext.Provider value={userName} >
-              <DpContext.Provider value={userDetails.img} >
+            <NameContext.Provider value={userName.name} >
+              <DpContext.Provider value={userDetails.dpLink} >
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="login" element={<LoginPage />} />
-                  <Route path="signup" element={<SignUp />} />
-                  <Route path="post" element={<Post />} />
-                  <Route path="postform" element={<PostForm />} />
-                  <Route path='profile' element={<ProfilePage />} />
+                  <Route key={'home'} path="/" element={<Home />} />
+                  <Route key={'login'} path="login" element={<LoginPage />} />
+                  <Route key={'signup'} path="signup" element={<SignUp />} />
+                  <Route key={'post'} path="post" element={<Post />} />
+                  <Route key={'postform'} path="postform" element={<PostForm />} />
+                  <Route key={'profile'} path='profile' element={<ProfilePage />} />
                 </Routes>
               </DpContext.Provider>
             </NameContext.Provider>

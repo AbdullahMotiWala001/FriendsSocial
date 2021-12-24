@@ -2,12 +2,12 @@ import * as React from 'react';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import useState from 'react-hook-use-state';
-import { useRef } from 'react';
+// import { useRef } from 'react';
 import { db } from './Firebase';
 import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
-import { getAuth, onAuthStateChanged, signOut, updateEmail } from "firebase/auth";
+import { getAuth, onAuthStateChanged, updateEmail } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
@@ -17,20 +17,20 @@ export default function ProfilePage() {
     //myFun
     // const navigate = useNavigate();
     const [uid, setUID] = useState("");
-    const [postDiv, setPostDiv] = useState(false);
-    const [userDiv, setUserDiv] = useState(false);
-    const [post, setPost] = useState([]);
+    // const [postDiv, setPostDiv] = useState(false);
+    // const [userDiv, setUserDiv] = useState(false);
+    // const [post, setPost] = useState([]);
     const [userInfo, setUserInfo] = useState({});
-    const [caption, setCaption] = useState("");
-    const files = useRef("");
-    const upFile = useRef("");
+    // const [caption, setCaption] = useState("");
+    // const files = useRef("");
+    // const upFile = useRef("");
     const [changeName, setChangeName] = useState(false);
-    const [changeLastName, setChangeLastName] = useState(false);
+    // const [changeLastName, setChangeLastName] = useState(false);
     const [changeEmail, setChangeEmail] = useState(false);
-    const [changeGender, setChangeGender] = useState(false);
+    // const [changeGender, setChangeGender] = useState(false);
     const [changeNameVal, setChangeNameVal] = useState("");
-    const [changeLastNameval, setChangeLastNameval] = useState("");
-    const [changeGenderVal, setChangeGenderVal] = useState("");
+    // const [changeLastNameval, setChangeLastNameval] = useState("");
+    // const [changeGenderVal, setChangeGenderVal] = useState("");
     const [changeEmailVal, setChangeEmailVal] = useState("");
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -45,7 +45,7 @@ export default function ProfilePage() {
                 navigate("/login");
             }
         });
-    }, []);
+    });
     const edit = (val) => {
         if (!changeName) {
             return (
@@ -123,20 +123,20 @@ export default function ProfilePage() {
     const editBtn = () => {
         setChangeName(true);
     };
-    const editBtnName = () => {
-        setChangeLastName(true);
-    };
+    // const editBtnName = () => {
+    //     setChangeLastName(true);
+    // };
 
     const editBtnEmail = () => {
         setChangeEmail(true);
     };
 
-    const editBtnGender = () => {
-        setChangeGender(true);
-    };
+    // const editBtnGender = () => {
+    //     setChangeGender(true);
+    // };
 
     const updateProvidedData = (e, val) => {
-        if (val.length >= 2 && val != userInfo[e.target.id]) {
+        if (val.length >= 2 && val !== userInfo[e.target.id]) {
             const updateRef = doc(db, "profile", uid);
             updateDoc(updateRef, {
                 [e.target.id]: val,
@@ -166,10 +166,10 @@ export default function ProfilePage() {
 
                 anchorReference="anchorPosition"
                 anchorPosition={{ top: 200, left: 400 }}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
+                // anchorOrigin={{
+                //     vertical: 'top',
+                //     horizontal: 'left',
+                // }}
                 transformOrigin={{
                     vertical: 'center',
                     horizontal: 'left',
