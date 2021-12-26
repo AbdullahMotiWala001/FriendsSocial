@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Post from './Post';
 import useLayoutEffect from 'react-hook-use-state';
 import useState from 'react-hook-use-state';
@@ -8,11 +8,15 @@ import { Link } from "react-router-dom"
 import { db } from './Firebase';
 import { collection, onSnapshot } from "firebase/firestore";
 import NavBar from './NavBar';
+import { DpContext } from './userContext';
+
+
 // import { doc, getDoc } from "firebase/firestore";
 
 //props passed error
 
 export default function Home() {
+    const dpContext = useContext(DpContext);
     const [postArr, setPostArr] = useState([]);
     // const [userEmail, setUserEmail] = useState("");
     // const navigate = useNavigate();
@@ -39,10 +43,10 @@ export default function Home() {
     }, []);
     return (
         <>
-            <NavBar dp={'dp link require'} />
+            <NavBar dp={dpContext} />
             <h1>Posts</h1>
             <Link to="PostForm">Add More</Link><br />
-            {postArr.map((e,ind) => <Post key={ind} postDate={e.timeStamp} author={e.author} postDesc={e.descrip} postImage={e.postImage} dp={e.dp} />)}
+            {postArr.map((e, ind) => <Post key={ind} postDate={e.timeStamp} author={e.author} postDesc={e.descrip} postImage={e.postImage} dp={e.dp} />)}
         </>
     );
 }

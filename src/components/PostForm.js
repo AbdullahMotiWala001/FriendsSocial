@@ -109,7 +109,6 @@ const Postform = () => {
     const changeState = (e) => {
         let { name, value } = e.target;
         setPostDet({ ...postDet, [name]: value })
-        console.log(postDet)
     }
 
 
