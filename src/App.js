@@ -19,25 +19,28 @@ import { NameContext, EmailContext, UidContext, DpContext } from './components/u
 
 
 function App() {
-  const [userDetails, setUserDetails] = useState({ name: 'null' })
+  console.log('appUpper ')
 
-  useEffect(() => {
-    // if (userDetails.name === 'null') {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-        const docRef = doc(db, "profile", uid);
-        getDoc(docRef).then((doc) => {
-          setUserDetails({ ...doc.data(), uid: uid });
-          // console.log(userDetails.name)
-        });
-      } else {
-      }
-    });
-    // }
+  const [userDetails, setUserDetails] = useState({ name: 'null',email:'null',uid:'uid',dpLink : 'dp ' })
+  
+  // useEffect(() => {
+  //   console.log('app')
+  //   // if (userDetails.name === 'null') {
+  //   const auth = getAuth();
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       const uid = user.uid;
+  //       const docRef = doc(db, "profile", uid);
+  //       getDoc(docRef).then((doc) => {
+  //         setUserDetails({ ...doc.data(), uid: uid });
+  //         // console.log(userDetails.name)
+  //       });
+  //     } else {
+  //     }
+  //   });
+  //   // }
 
-  }, [userDetails]);
+  // }, [userDetails]);
   // console.log(userDetails)
   return (
     <div className="App">

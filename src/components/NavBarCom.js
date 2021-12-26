@@ -85,6 +85,7 @@ export default function PrimarySearchAppBar(props) {
     };
 
     const menuId = 'primary-search-account-menu';
+    
     const renderMenu = (
         <Menu
             anchorEl={anchorEl}

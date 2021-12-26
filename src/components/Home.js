@@ -9,6 +9,7 @@ import { db } from './Firebase';
 import { collection, onSnapshot } from "firebase/firestore";
 import NavBar from './NavBar';
 import { DpContext } from './userContext';
+import SearcBar from './SearchBar'
 
 
 // import { doc, getDoc } from "firebase/firestore";
@@ -41,8 +42,10 @@ export default function Home() {
     useLayoutEffect(() => {
         onSnapshot(collection(db, 'posts'), (snapShot) => setPostArr(snapShot.docs.map((doc) => (doc.data()))))
     }, []);
+    console.log('home.js')
     return (
         <>
+            {/* <SearcBar /> */}
             <NavBar dp={dpContext} />
             <h1>Posts</h1>
             <Link to="PostForm">Add More</Link><br />
