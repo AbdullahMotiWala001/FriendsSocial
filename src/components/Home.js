@@ -18,6 +18,7 @@ import SearcBar from './SearchBar'
 
 export default function Home() {
     const dpContext = useContext(DpContext);
+    console.log(dpContext)
     const [postArr, setPostArr] = useState([]);
     // const [userEmail, setUserEmail] = useState("");
     // const navigate = useNavigate();
@@ -42,12 +43,9 @@ export default function Home() {
     useLayoutEffect(() => {
         onSnapshot(collection(db, 'posts'), (snapShot) => setPostArr(snapShot.docs.map((doc) => (doc.data()))))
     }, []);
-    console.log('home.js')
     return (
         <>
-            {/* <SearcBar /> */}
             <NavBar dp={dpContext} />
-            <h1>Posts</h1>
             <Link to="PostForm">Add More</Link><br />
             {postArr.map((e, ind) => <Post key={ind} postDate={e.timeStamp} author={e.author} postDesc={e.descrip} postImage={e.postImage} dp={e.dp} />)}
         </>

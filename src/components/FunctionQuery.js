@@ -18,5 +18,5 @@ export const searchResult = async (
     });
 };
 export const showUser = (id, navigate) => {
-    navigate(`/profile/${id}`);
+    navigate(`/user/${id}`);
 };

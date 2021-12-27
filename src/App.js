@@ -13,6 +13,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from './components/Firebase';
 import { NameContext, EmailContext, UidContext, DpContext } from './components/userContext';
+import SearchedUser from './components/SearchedUser';
 
 
 
@@ -21,26 +22,26 @@ import { NameContext, EmailContext, UidContext, DpContext } from './components/u
 function App() {
   console.log('appUpper ')
 
-  const [userDetails, setUserDetails] = useState({ name: 'null',email:'null',uid:'uid',dpLink : 'dp ' })
-  
-  // useEffect(() => {
-  //   console.log('app')
-  //   // if (userDetails.name === 'null') {
-  //   const auth = getAuth();
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       const uid = user.uid;
-  //       const docRef = doc(db, "profile", uid);
-  //       getDoc(docRef).then((doc) => {
-  //         setUserDetails({ ...doc.data(), uid: uid });
-  //         // console.log(userDetails.name)
-  //       });
-  //     } else {
-  //     }
-  //   });
-  //   // }
+  const [userDetails, setUserDetails] = useState({})
 
-  // }, [userDetails]);
+  useEffect(() => {
+    console.log('app')
+    // if (userDetails.name === 'null') {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        const docRef = doc(db, "profile", uid);
+        getDoc(docRef).then((doc) => {
+          setUserDetails({ ...doc.data(), uid: uid });
+          // console.log(userDetails.name)
+        });
+      } else {
+      }
+    });
+    // }
+
+  }, []);
   // console.log(userDetails)
   return (
     <div className="App">
@@ -56,6 +57,7 @@ function App() {
                   <Route key={'post'} path="post" element={<Post />} />
                   <Route key={'postform'} path="postform" element={<PostForm />} />
                   <Route key={'profile'} path='profile' element={<ProfilePage />} />
+                  <Route key={'params'} path='user/:uid' element={<SearchedUser />} />
                 </Routes>
               </DpContext.Provider>
             </NameContext.Provider>

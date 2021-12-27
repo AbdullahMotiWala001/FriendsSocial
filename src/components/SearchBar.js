@@ -106,7 +106,12 @@ export default function SearchBar() {
         if (querySearch.length === 0) {
             setSearchedResult([]);
         }
+        console.log(searchedResult)
     };
+    const searchRes = {
+        height: '100px',
+        width: '150px',
+    }
 
     return (
         <>
@@ -124,27 +129,27 @@ export default function SearchBar() {
                             showResults();
                             setUserQ(e.target.value)
                         }}
-                    // inputProps={{ "aria-label": "search" }}
+                        inputProps={{ "aria-label": "search" }}
                     />
-                    <div spacing={2} sx={{ width: 300 }}>
-                        {searchedResult.map((e, index) => {
-                            return (
-                                <QueryUser
-                                    // show={() => {
-                                    //     showUser(e.userID, navigate);
-                                    // }}
-                                    // set={() => {
-                                    //     setSearchedResult([]);
-                                    // }}
-                                    key={index}
-                                    src={e.dp}
-                                    name={e.name}
-                                />
-                            );
-                        })}
-                    </div>
                 </Search>
             </Stack>
+            <div spacing={2} className="searchCont">
+                {searchedResult.map((e, index) => {
+                    return (
+                        <QueryUser
+                            show={() => {
+                                showUser(e.uid, navigate);
+                            }}
+                            // set={() => {
+                            //     setSearchedResult([]);
+                            // }}
+                            key={index}
+                            queryName={e.name}
+                            queryDp={e.dpLink}
+                        />
+                    );
+                })}
+            </div>
         </>
     );
 }

@@ -27,6 +27,12 @@
 .App-link {
   color: #61dafb;
 }
+.searchCont {
+  width: 350px;
+  position: fixed;
+  top: 65px;
+  left: 125px;
+}
 
 @keyframes App-logo-spin {
   from {

@@ -15,11 +15,11 @@ export default function QueryUser(props) {
                 container
                 spacing={0}
                 direction="column"
-                alignItems="center"
-                style={{ minHeight: '100vh' }}
+                alignItems="right"
+                style={{ width: '350px', bgColor: 'brown' }}
             >
-                <Grid item xs={3} >
-                    <Card sx={{ maxWidth: 345 }}>
+                <Grid item  >
+                    <Card sx={{ maxWidth: 350, }}>
                         <CardHeader
                             avatar={
                                 <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={props.queryDp}>
@@ -30,11 +30,13 @@ export default function QueryUser(props) {
                                     <MoreVertIcon />
                                 </IconButton>
                             }
-                            title={props.queryUser}
+                            title={props.queryName}
+                            onClick={props.show}
                         />
                     </Card>
                 </Grid>
             </Grid >
+            <p>PAk</p>
         </div>
     )
 }
