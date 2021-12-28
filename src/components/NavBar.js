@@ -18,7 +18,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import Avatar from '@mui/material/Avatar';
 import ProfilePage from './ProfilePage';
 import SearchBar from './SearchBar';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 // const Search = styled('div')(({ theme }) => ({
 //     position: 'relative',
@@ -103,7 +103,7 @@ export default function NavBar(props) {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>
-                <Link to='profile'>Profile</Link>
+                <ProfilePage />
             </MenuItem>
             <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
         </Menu>
@@ -156,7 +156,7 @@ export default function NavBar(props) {
                 >
                     <AccountCircle />
                 </IconButton>
-                <Link to='profile'></Link>
+                <ProfilePage />
             </MenuItem>
         </Menu>
     );
