@@ -11,20 +11,25 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Grid from '@material-ui/core/Grid';
 
 const Post = (props) => {
-    
+    if (props.postImage) {
+        console.log(`It is link => ${props.postImage}`)
+    } else {
+        console.log()
+    }
     return (
         <Grid
             container
             spacing={0}
             direction="column"
             alignItems="center"
-            style={{ minHeight: '100vh' }}
+            style={{ minHeight: '100vh', backgroundColor: '#fff', width: '50vw'}
+            }
         >
-            <Grid item xs={3} >
-                <Card sx={{ maxWidth: 345 }}>
+            <Grid item  >
+                <Card sx={{ width: '470px', height: '500px',boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)' }}>
                     <CardHeader
                         avatar={
-                            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={props.dp}>
+                            <Avatar sx={{}} sx={{ width: 48, height: 48, bgcolor: red[500] }} aria-label="recipe" src={props.dp}>
                             </Avatar>
                         }
                         action={
@@ -35,11 +40,12 @@ const Post = (props) => {
                         title={props.author}
                         subheader={props.postingDate}
                     />
-                    <CardMedia
+                    {props.postImage && (<CardMedia
                         component="img"
-                        height="194"
+                        height='70%'
                         image={props.postImage}
-                    />
+                    />)
+                    }
                     <CardContent>
                         <Typography variant="body2" color="text.secondary">
                             {props.postDesc}
