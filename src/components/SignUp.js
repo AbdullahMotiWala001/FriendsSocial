@@ -106,7 +106,7 @@ const Signup = (uid) => {
                             Please fill this form to create an account !
                         </Typography>
                     </Grid>
-                    <form>
+                    <form action='http://localhost:5000/api/auth/signup' method='POST'>
                         <TextField onChange={getUser} fullWidth label="Name" value={user.name} name="name" />
                         <TextField onChange={getUser} fullWidth label="Email" value={user.email} name="email" />
 
@@ -146,10 +146,11 @@ const Signup = (uid) => {
                             name="password"
                             type="password"
                         />
-
-                        <Button onClick={() => { signUp(user.email, user.password, navigate, sendingData) }} variant="contained" color="primary" style={{ margin: '10px' }} >
+                        <button>SignUp</button>
+                        {/* firebase */}
+                        {/* <Button onClick={() => { signUp(user.email, user.password, navigate, sendingData) }} variant="contained" color="primary" style={{ margin: '10px' }} >
                             Sign up
-                        </Button>
+                        </Button> */}
                         <Typography>Have Account Account ?<Link to='/login'> Sign In</Link></Typography>
                     </form>
                 </Paper>

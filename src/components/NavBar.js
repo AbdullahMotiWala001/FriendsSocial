@@ -103,7 +103,8 @@ export default function NavBar(props) {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>
-                <ProfilePage />
+                {/* <ProfilePage /> */}
+                <Link to="profile">Profile</Link>
             </MenuItem>
             <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
         </Menu>

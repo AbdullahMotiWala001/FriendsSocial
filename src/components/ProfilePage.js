@@ -37,6 +37,7 @@ export default function TemporaryDrawer() {
   const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+  toggleDrawer(true)
   const accordianUi = () => {
     return (
       <Box
@@ -84,7 +85,7 @@ export default function TemporaryDrawer() {
   return (
     <div>
       <React.Fragment key={1}>
-        <Button onClick={toggleDrawer(true)}>Profile</Button>
+        {/* <Button onClick={toggleDrawer(true)}>Profile</Button> */}
         <Drawer open={state} onClose={toggleDrawer(false)}>
           {accordianUi()}
         </Drawer>

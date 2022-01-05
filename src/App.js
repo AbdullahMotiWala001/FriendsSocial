@@ -56,7 +56,7 @@ function App() {
                   <Route key={'signup'} path="signup" element={<SignUp />} />
                   <Route key={'post'} path="post" element={<Post />} />
                   <Route key={'postform'} path="postform" element={<PostForm />} />
-                  <Route key={'profile'} path='profile' element={<ProfilePage />} />
+                  <Route key={'params'} path='/:uid' element={<ProfilePage />} />
                   <Route key={'params'} path='user/:uid' element={<SearchedUser />} />
                 </Routes>
               </DpContext.Provider>

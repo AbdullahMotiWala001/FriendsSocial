@@ -24,7 +24,7 @@ export default function LoginPage() {
         value = e.target.value
         setUser({ ...user, [name]: value })
     }
-    
+
     //styling
     const paperStyle = {
         padding: 20,
@@ -50,12 +50,16 @@ export default function LoginPage() {
                     <Grid marginTop={1}>
                         <h1 style={{ color: '#00A36C' }}>F.R.I.E.N.D.S</h1>
                     </Grid>
-                    <TextField onChange={changeHandler} label="Email" variant="standard" fullWidth required value={user.email} name='email'></TextField>
-                    <TextField onChange={changeHandler} label="Password" variant="standard" fullWidth required value={user.password} name='password'></TextField>
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox />} label="Remembre me" />
-                    </FormGroup>
-                    <Button color='primary' fullWidth variant='contained' onClick={() => signIn(user.email, user.password, navigate)}>Sign In</Button>
+                    <form action="http://localhost:5000/api/auth/login" method='POST'>
+                        <TextField onChange={changeHandler} label="Email" variant="standard" fullWidth required value={user.email} name='email'></TextField>
+                        <TextField onChange={changeHandler} label="Password" variant="standard" fullWidth required value={user.password} name='password' type='password'></TextField>
+                        <FormGroup>
+                            <FormControlLabel control={<Checkbox />} label="Remembre me" />
+                        </FormGroup>
+                        <button>Sign In</button>
+                    </form>
+                    {/* firebase */}
+                    {/* <Button color='primary' fullWidth variant='contained' onClick={() => signIn(user.email, user.password, navigate)}>Sign In</Button> */}
                     <Typography >
                         Do you have an account ? <Link style={{ cursor: 'pointer' }} to="/signup"> Sign Up </Link>
                     </Typography>

@@ -30,7 +30,7 @@ export const signUp = (email, password, navigate, sendingFun) => {
             alert("You have successfully Signup")
             const navigateState = navigate;
             sendingFun(userUid)
-            navigateState('/');
+            // navigateState('/');
         })
         .catch((error) => {
             alert(error.code)
